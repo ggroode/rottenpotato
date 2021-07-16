@@ -7,31 +7,25 @@ class MoviesController < ApplicationController
   end
 
   def index
-    ratings = []
-    if params[:ratings]
-      ratings = params[:ratings].keys
+    @ratings = {}
+    if (params[:ratings] or params[:order])
+      session.delete(:ratings)
+      session.delete(:order)
+    end 
+      
+    if params[:ratings] || session[:ratings]
+      @ratings = params[:ratings]|| session[:ratings]
     end
-    @movies = Movie.with_ratings(ratings)
+    @movies = Movie.with_ratings(@ratings.keys)
     @all_ratings = Movie.all_ratings
-    @ratings_to_show=ratings
+    @ratings_to_show=@ratings.keys
     @title_class = ""
     @release_class = ""
-    @order = params[:order]
+    @order = params[:order] || session[:order]
     if @order
-       @highlight = "hilite bg-warning"
        @movies = @movies.order(@order)
-       puts("This language is stupid")
-#        if params[:order]==:title
-#          @title_class=highlight
-#        elsif params[:order]==:release_date
-#          @release_class=highlight
-#        end
-# #        if orderBy=='Title'
-# #          @movies = @movies.order(:title)
-# #        end
-# #        if orderBy == 'Release'
-# #          @movies = @movies.order(:release_date)
-# #        end
+    session[:ratings] = @ratings
+    session[:order] = @order
     end 
   end
 
