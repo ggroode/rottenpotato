@@ -14,6 +14,25 @@ class MoviesController < ApplicationController
     @movies = Movie.with_ratings(ratings)
     @all_ratings = Movie.all_ratings
     @ratings_to_show=ratings
+    @title_class = ""
+    @release_class = ""
+    @order = params[:order]
+    if @order
+       @highlight = "hilite bg-warning"
+       @movies = @movies.order(@order)
+       puts("This language is stupid")
+#        if params[:order]==:title
+#          @title_class=highlight
+#        elsif params[:order]==:release_date
+#          @release_class=highlight
+#        end
+# #        if orderBy=='Title'
+# #          @movies = @movies.order(:title)
+# #        end
+# #        if orderBy == 'Release'
+# #          @movies = @movies.order(:release_date)
+# #        end
+    end 
   end
 
   def new
